@@ -1,5 +1,6 @@
 import { Types, FlattenMaps } from 'mongoose';
 import UsersRepository from '../../repository/usersRepository';
+import AppError from '../../errors/AppError';
 
 interface IUser {
   name: string;
@@ -28,21 +29,21 @@ class EditUserService {
     FlattenMaps<IUser & { _id: Types.ObjectId }> | null | undefined
   > {
     if (!id) {
-      throw new Error('Id is not sending o request!');
+      throw new AppError('Id is not sending o request!');
     }
 
     const response = await this.usersRepository.edit({ id, name, email });
 
     if (!response) {
-      throw new Error('Connection database error!');
+      throw new AppError('Connection database error!');
     }
 
     if (response.matchedCount === 0) {
-      throw new Error('User not found!');
+      throw new AppError('User not found!');
     }
 
     if (response.modifiedCount === 0) {
-      throw new Error('User not modified!');
+      throw new AppError('User not modified!');
     }
 
     const user = await this.usersRepository.listById({ id });

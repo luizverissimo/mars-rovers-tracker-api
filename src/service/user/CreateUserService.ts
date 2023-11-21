@@ -1,3 +1,4 @@
+import AppError from '../../errors/AppError';
 import User from '../../model/User';
 import UsersRepository from '../../repository/usersRepository';
 import bcrypt from 'bcrypt';
@@ -23,7 +24,7 @@ class CreateUserService {
     const existsUser = await this.usersRepository.findOneByEmail({ email });
 
     if (existsUser) {
-      throw new Error('O usuário já foi cadastrado!');
+      throw new AppError('O usuário já foi cadastrado!');
     }
 
     const saltRounds = 10;

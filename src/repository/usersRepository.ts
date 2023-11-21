@@ -33,13 +33,9 @@ class UsersRepository {
     email,
     password,
   }: IUser): Promise<User | undefined> {
-    try {
-      const user = new User({ name, email, password });
-      await user.newModel().save();
-      return user;
-    } catch (error) {
-      console.log(error);
-    }
+    const user = new User({ name, email, password });
+    await user.newModel().save();
+    return user;
   }
 
   public async listById({
@@ -47,18 +43,14 @@ class UsersRepository {
   }: IId): Promise<
     FlattenMaps<IUser & { _id: Types.ObjectId }> | null | undefined
   > {
-    try {
-      const user = await User.getModel()
-        .findOne({
-          _id: new Types.ObjectId(id),
-          removed: false,
-        })
-        .lean();
+    const user = await User.getModel()
+      .findOne({
+        _id: new Types.ObjectId(id),
+        removed: false,
+      })
+      .lean();
 
-      return user;
-    } catch (error) {
-      console.log(error);
-    }
+    return user;
   }
 
   public async edit({
@@ -66,52 +58,44 @@ class UsersRepository {
     name,
     email,
   }: IUserEdit): Promise<UpdateWriteOpResult | null | undefined> {
-    try {
-      const updatedAt = new Date();
-      const response = await User.getModel()
-        .updateOne(
-          {
-            _id: new Types.ObjectId(id),
+    const updatedAt = new Date();
+    const response = await User.getModel()
+      .updateOne(
+        {
+          _id: new Types.ObjectId(id),
+        },
+        {
+          $set: {
+            name,
+            email,
+            updatedAt,
           },
-          {
-            $set: {
-              name,
-              email,
-              updatedAt,
-            },
-          },
-        )
-        .lean();
+        },
+      )
+      .lean();
 
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
+    return response;
   }
 
   public async delete({
     id,
   }: IId): Promise<UpdateWriteOpResult | null | undefined> {
-    try {
-      const updatedAt = new Date();
-      const response = await User.getModel()
-        .updateOne(
-          {
-            _id: new Types.ObjectId(id),
+    const updatedAt = new Date();
+    const response = await User.getModel()
+      .updateOne(
+        {
+          _id: new Types.ObjectId(id),
+        },
+        {
+          $set: {
+            removed: true,
+            updatedAt,
           },
-          {
-            $set: {
-              removed: true,
-              updatedAt,
-            },
-          },
-        )
-        .lean();
+        },
+      )
+      .lean();
 
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
+    return response;
   }
 }
 

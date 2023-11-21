@@ -17,25 +17,17 @@ const usersRouter = Router();
   @access     Public
 */
 usersRouter.post('/', async (request, response) => {
-  try {
-    const { name, email, password } = request.body;
+  const { name, email, password } = request.body;
 
-    const createUservice = new CreateUserService(usersRepository);
+  const createUservice = new CreateUserService(usersRepository);
 
-    const user = await createUservice.execute({
-      name,
-      email,
-      password,
-    });
+  const user = await createUservice.execute({
+    name,
+    email,
+    password,
+  });
 
-    return response.json(user);
-  } catch (error) {
-    let errorMessage = 'Failed to do something exceptional';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    return response.status(400).json({ error: errorMessage });
-  }
+  return response.json(user);
 });
 
 /*
@@ -47,21 +39,13 @@ usersRouter.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
   async (request, response) => {
-    try {
-      const { id } = request.params;
+    const { id } = request.params;
 
-      const listUserByIdService = new ListUserByIdService(usersRepository);
+    const listUserByIdService = new ListUserByIdService(usersRepository);
 
-      const user = await listUserByIdService.execute(id);
+    const user = await listUserByIdService.execute(id);
 
-      return response.json(user);
-    } catch (error) {
-      let errorMessage = 'Failed to do something exceptional';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      return response.status(400).json({ error: errorMessage });
-    }
+    return response.json(user);
   },
 );
 
@@ -75,23 +59,14 @@ usersRouter.put(
   '/:id',
   passport.authenticate('jwt', { session: false }),
   async (request, response) => {
-    try {
-      const { id } = request.params;
-      const { name, email } = request.body;
+    const { id } = request.params;
+    const { name, email } = request.body;
 
-      const editUserService = new EditUserService(usersRepository);
+    const editUserService = new EditUserService(usersRepository);
 
-      const user = await editUserService.execute({ id, name, email });
+    const user = await editUserService.execute({ id, name, email });
 
-      return response.json(user);
-    } catch (error) {
-      let errorMessage = 'Failed to do something exceptional';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      return response.status(400).json({ error: errorMessage });
-    }
+    return response.json(user);
   },
 );
 
@@ -105,22 +80,13 @@ usersRouter.delete(
   '/:id',
   passport.authenticate('jwt', { session: false }),
   async (request, response) => {
-    try {
-      const { id } = request.params;
+    const { id } = request.params;
 
-      const deleteUserService = new DeleteUserService(usersRepository);
+    const deleteUserService = new DeleteUserService(usersRepository);
 
-      await deleteUserService.execute({ id });
+    await deleteUserService.execute({ id });
 
-      return response.json({ ok: 'ok' });
-    } catch (error) {
-      let errorMessage = 'Failed to do something exceptional';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      return response.status(400).json({ error: errorMessage });
-    }
+    return response.json({ ok: 'ok' });
   },
 );
 

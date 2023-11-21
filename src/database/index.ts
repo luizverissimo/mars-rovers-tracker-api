@@ -1,4 +1,5 @@
 import mongoose, { Mongoose } from 'mongoose';
+import AppError from '../errors/AppError';
 const { MONGO_URI } = process.env;
 
 class Database {
@@ -6,7 +7,7 @@ class Database {
 
   public async connect() {
     if (!MONGO_URI) {
-      throw new Error('You must have an URI to connect on database');
+      throw new AppError('You must have an URI to connect on database');
     }
     this.setConnection(await mongoose.connect(`${MONGO_URI}`));
   }

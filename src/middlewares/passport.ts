@@ -19,20 +19,12 @@ const opts: StrategyOptions = {
 export default new JwtStrategy(
   opts,
   async (jwt_payload: IJwtPayload, done: VerifiedCallback) => {
-    try {
-      const user = await User.getModel()
-        .findOne({ _id: new Types.ObjectId(jwt_payload.id) })
-        .lean();
-      if (user) {
-        return done(null, user);
-      }
-      return done(null, false);
-    } catch (error) {
-      let errorMessage = 'Failed to do something exceptional';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      console.log(errorMessage);
+    const user = await User.getModel()
+      .findOne({ _id: new Types.ObjectId(jwt_payload.id) })
+      .lean();
+    if (user) {
+      return done(null, user);
     }
+    return done(null, false);
   },
 );
