@@ -11,7 +11,7 @@ interface ILand {
 
 const landSchema = new Schema<ILand>({
   name: { type: String, required: true },
-  horizontalRange: { type: Number, horizontalRange: true },
+  horizontalRange: { type: Number, required: true },
   verticalRange: { type: Number, required: true },
   removed: { type: Boolean, required: true, default: false },
   createdAt: { type: Date, required: true, default: Date.now },
