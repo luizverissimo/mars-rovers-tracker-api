@@ -19,9 +19,9 @@ const usersRouter = Router();
 usersRouter.post('/', async (request, response) => {
   const { name, email, password } = request.body;
 
-  const createUservice = new CreateUserService(usersRepository);
+  const createUserservice = new CreateUserService(usersRepository);
 
-  const user = await createUservice.execute({
+  const user = await createUserservice.execute({
     name,
     email,
     password,
