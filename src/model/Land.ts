@@ -4,6 +4,7 @@ interface ILand {
   name: string;
   horizontalRange: number;
   verticalRange: number;
+  userId: Schema.Types.ObjectId;
   removed?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -13,6 +14,7 @@ const landSchema = new Schema<ILand>({
   name: { type: String, required: true },
   horizontalRange: { type: Number, required: true },
   verticalRange: { type: Number, required: true },
+  userId: { type: Schema.Types.ObjectId, required: true, default: false },
   removed: { type: Boolean, required: true, default: false },
   createdAt: { type: Date, required: true, default: Date.now },
   updatedAt: { type: Date, required: true, default: Date.now },
@@ -27,10 +29,13 @@ class Land {
 
   verticalRange: number;
 
-  constructor({ name, horizontalRange, verticalRange }: ILand) {
+  userId: Schema.Types.ObjectId;
+
+  constructor({ name, horizontalRange, verticalRange, userId }: ILand) {
     this.name = name;
     this.horizontalRange = horizontalRange;
     this.verticalRange = verticalRange;
+    this.userId = userId;
   }
 
   public static getModel() {
@@ -41,6 +46,7 @@ class Land {
       name: this.name,
       horizontalRange: this.horizontalRange,
       verticalRange: this.verticalRange,
+      userId: this.userId,
     });
   }
 }

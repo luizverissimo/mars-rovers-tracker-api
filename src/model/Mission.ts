@@ -2,9 +2,9 @@ import { Schema, model } from 'mongoose';
 
 interface IMission {
   name: string;
-  rovers: object;
-  land: Schema.Types.ObjectId;
-  user: Schema.Types.ObjectId;
+  roversIds: object;
+  landId: Schema.Types.ObjectId;
+  userId: Schema.Types.ObjectId;
   removed?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -12,9 +12,9 @@ interface IMission {
 
 const missionSchema = new Schema<IMission>({
   name: { type: String, required: true },
-  rovers: { type: [Schema.Types.ObjectId], required: true, default: false },
-  land: { type: Schema.Types.ObjectId, required: true, default: false },
-  user: { type: Schema.Types.ObjectId, required: true, default: false },
+  roversIds: { type: [Schema.Types.ObjectId], required: true, default: false },
+  landId: { type: Schema.Types.ObjectId, required: true, default: false },
+  userId: { type: Schema.Types.ObjectId, required: true, default: false },
   removed: { type: Boolean, required: true, default: false },
   createdAt: { type: Date, required: true, default: Date.now },
   updatedAt: { type: Date, required: true, default: Date.now },
@@ -25,17 +25,17 @@ const missionModel = model<IMission>('Mission', missionSchema);
 class Mission {
   name: string;
 
-  rovers: object;
+  roversIds: object;
 
-  land: Schema.Types.ObjectId;
+  landId: Schema.Types.ObjectId;
 
-  user: Schema.Types.ObjectId;
+  userId: Schema.Types.ObjectId;
 
-  constructor({ name, rovers, land, user }: IMission) {
+  constructor({ name, roversIds, landId, userId }: IMission) {
     this.name = name;
-    this.rovers = rovers;
-    this.land = land;
-    this.user = user;
+    this.roversIds = roversIds;
+    this.landId = landId;
+    this.userId = userId;
   }
 
   public static getModel() {
@@ -44,9 +44,9 @@ class Mission {
   public newModel() {
     return new missionModel({
       name: this.name,
-      rovers: this.rovers,
-      land: this.land,
-      user: this.user,
+      roversIds: this.roversIds,
+      landId: this.landId,
+      userId: this.userId,
     });
   }
 }
