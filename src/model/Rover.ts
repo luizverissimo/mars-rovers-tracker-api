@@ -2,7 +2,7 @@ import { Schema, Types, model } from 'mongoose';
 
 interface IRover {
   name: string;
-  userId: Schema.Types.ObjectId;
+  userId: Types.ObjectId;
   removed?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -21,7 +21,7 @@ const roverModel = model<IRover>('Rover', roverSchema);
 class Rover {
   name: string;
 
-  userId: Schema.Types.ObjectId;
+  userId: Types.ObjectId;
 
   constructor({ name, userId }: IRover) {
     this.name = name;

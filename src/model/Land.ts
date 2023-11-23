@@ -1,10 +1,10 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 
 interface ILand {
   name: string;
   horizontalRange: number;
   verticalRange: number;
-  userId: Schema.Types.ObjectId;
+  userId: Types.ObjectId;
   removed?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -29,7 +29,7 @@ class Land {
 
   verticalRange: number;
 
-  userId: Schema.Types.ObjectId;
+  userId: Types.ObjectId;
 
   constructor({ name, horizontalRange, verticalRange, userId }: ILand) {
     this.name = name;

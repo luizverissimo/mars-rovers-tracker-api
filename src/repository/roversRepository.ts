@@ -1,9 +1,9 @@
-import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
 import Rover from '../model/Rover';
 
 interface IRover {
   name: string;
-  userId: Schema.Types.ObjectId;
+  userId: Types.ObjectId;
 }
 
 class RoversRepository {

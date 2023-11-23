@@ -1,9 +1,9 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 
 interface IRoversMission {
-  roverId: Schema.Types.ObjectId;
+  roverId: Types.ObjectId;
   pathCommands: string;
-  intial: {
+  intialPosition: {
     x: string;
     y: string;
     orientation: string;
@@ -12,9 +12,9 @@ interface IRoversMission {
 
 interface IMission {
   name: string;
-  roversMission: IRoversMission;
-  landId: Schema.Types.ObjectId;
-  userId: Schema.Types.ObjectId;
+  roversMission: IRoversMission[];
+  landId: Types.ObjectId;
+  userId: Types.ObjectId;
   removed?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -22,7 +22,7 @@ interface IMission {
 
 const missionSchema = new Schema<IMission>({
   name: { type: String, required: true },
-  roversMission: { type: Object, required: true },
+  roversMission: { type: [Object], required: true },
   landId: { type: Schema.Types.ObjectId, required: true },
   userId: { type: Schema.Types.ObjectId, required: true },
   removed: { type: Boolean, required: true, default: false },
@@ -35,11 +35,11 @@ const missionModel = model<IMission>('Mission', missionSchema);
 class Mission {
   name: string;
 
-  roversMission: object;
+  roversMission: IRoversMission[];
 
-  landId: Schema.Types.ObjectId;
+  landId: Types.ObjectId;
 
-  userId: Schema.Types.ObjectId;
+  userId: Types.ObjectId;
 
   constructor({ name, roversMission, landId, userId }: IMission) {
     this.name = name;
