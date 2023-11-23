@@ -1,6 +1,6 @@
 import { Schema, Types, model } from 'mongoose';
 
-interface IRover {
+export interface IRover {
   name: string;
   userId: Types.ObjectId;
   removed?: boolean;

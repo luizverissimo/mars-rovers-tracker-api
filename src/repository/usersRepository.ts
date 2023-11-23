@@ -7,6 +7,7 @@ interface IEmail {
 interface IId {
   id: string;
 }
+
 interface IUser {
   name: string;
   email: string;

@@ -1,5 +1,15 @@
-import { Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import Rover from '../model/Rover';
+import { UpdateResult } from 'mongodb';
+
+interface IId {
+  id: string;
+}
+
+interface IRoverEdit {
+  id: Types.ObjectId;
+  name: string;
+}
 
 interface IRover {
   name: string;
@@ -10,6 +20,52 @@ class RoversRepository {
   public async create({ name, userId }: IRover): Promise<Rover | undefined> {
     const rover = new Rover({ name, userId });
     await rover.newModel().save();
+    return rover;
+  }
+
+  public async listById({
+    id,
+  }: IId): Promise<
+    (Document<unknown, IRover> & IRover & { _id: Types.ObjectId }) | null
+  > {
+    const idParsed = new Types.ObjectId(id);
+    const rover = await Rover.getModel().findOne({ _id: idParsed });
+    return rover;
+  }
+
+  public async edit({ id, name }: IRoverEdit): Promise<UpdateResult<Document>> {
+    const updatedAt = new Date();
+    const response = await Rover.getModel()
+      .updateOne(
+        {
+          _id: new Types.ObjectId(id),
+        },
+        {
+          $set: {
+            name,
+            updatedAt,
+          },
+        },
+      )
+      .lean();
+    return response;
+  }
+
+  public async delete({ id }: IId): Promise<UpdateResult<Document>> {
+    const updatedAt = new Date();
+    const rover = await Rover.getModel()
+      .updateOne(
+        {
+          _id: new Types.ObjectId(id),
+        },
+        {
+          $set: {
+            removed: true,
+            updatedAt,
+          },
+        },
+      )
+      .lean();
     return rover;
   }
 }
