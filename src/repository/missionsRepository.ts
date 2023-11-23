@@ -1,15 +1,5 @@
 import { Types } from 'mongoose';
-import Mission from '../model/Mission';
-
-export interface IRoversMission {
-  roverId: Types.ObjectId;
-  pathCommands: string;
-  intial: {
-    x: string;
-    y: string;
-    orientation: string;
-  };
-}
+import Mission, { IRoversMission } from '../model/Mission';
 
 interface IMission {
   name: string;

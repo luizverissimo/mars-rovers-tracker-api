@@ -9,8 +9,8 @@ const landsRouter = Router();
 
 /*
   @route      POST /lands
-  @desc       Create rover
-  @body       name, email, userId
+  @desc       Create land
+  @body       name, horizontalRange, verticalRange, userId
   @access     Public
 */
 landsRouter.post(

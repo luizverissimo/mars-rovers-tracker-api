@@ -1,6 +1,6 @@
 import { Schema, Types, model } from 'mongoose';
 
-interface IRoversMission {
+export interface IRoversMission {
   roverId: Types.ObjectId;
   pathCommands: string;
   intialPosition: {

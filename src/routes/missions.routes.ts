@@ -10,7 +10,7 @@ const missionsRouter = Router();
 /*
   @route      POST /missions
   @desc       Create mission
-  @body       name, email, userId
+  @body       name, roversMission, landId, userId
   @access     Public
 */
 missionsRouter.post(

@@ -18,6 +18,7 @@ class CreateRoverService {
     if (!userId) {
       throw new AppError('User must be inserted.');
     }
+
     const userIdParsed = new Types.ObjectId(userId);
 
     const rover = await this.roversRepository.create({

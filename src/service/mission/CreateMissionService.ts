@@ -1,8 +1,6 @@
 import { Types } from 'mongoose';
-import Mission from '../../model/Mission';
-import MissionsRepository, {
-  IRoversMission,
-} from '../../repository/missionsRepository';
+import Mission, { IRoversMission } from '../../model/Mission';
+import MissionsRepository from '../../repository/missionsRepository';
 
 interface Request {
   name: string;
@@ -26,14 +24,14 @@ class CreateMissionService {
     const userIdParsed = new Types.ObjectId(userId);
     const landIdParsed = new Types.ObjectId(landId);
 
-    const land = await this.missionsRepository.create({
+    const mission = await this.missionsRepository.create({
       name,
       roversMission: roversMission as IRoversMission[],
       landId: landIdParsed,
       userId: userIdParsed,
     });
 
-    return land;
+    return mission;
   }
 }
 export default CreateMissionService;

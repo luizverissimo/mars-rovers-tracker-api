@@ -10,7 +10,7 @@ const roversRouter = Router();
 /*
   @route      POST /rovers
   @desc       Create rover
-  @body       name, email, userId
+  @body        name, userId
   @access     Public
 */
 roversRouter.post(
