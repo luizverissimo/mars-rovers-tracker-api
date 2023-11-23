@@ -10,7 +10,7 @@ interface IRover {
 
 const roverSchema = new Schema<IRover>({
   name: { type: String, required: true },
-  userId: { type: Schema.Types.ObjectId, required: true, default: false },
+  userId: { type: Schema.Types.ObjectId, required: true },
   removed: { type: Boolean, required: true, default: false },
   createdAt: { type: Date, required: true, default: Date.now },
   updatedAt: { type: Date, required: true, default: Date.now },
