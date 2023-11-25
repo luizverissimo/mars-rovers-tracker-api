@@ -4,8 +4,8 @@ export interface IRoversMission {
   roverId: Types.ObjectId;
   pathCommands: string;
   intialPosition: {
-    x: string;
-    y: string;
+    x: number;
+    y: number;
     orientation: string;
   };
 }

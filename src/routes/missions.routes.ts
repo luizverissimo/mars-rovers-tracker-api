@@ -5,8 +5,11 @@ import CreateMissionService from '../service/mission/CreateMissionService';
 import ListByIdMissionsService from '../service/mission/ListByIdMissionService';
 import EditMissionService from '../service/mission/EditMissionService';
 import DeleteMissiondService from '../service/mission/DeleteMission';
+import ExecuteMissionService from '../service/mission/ExecuteMissionService';
+import LandsRepository from '../repository/landsRepository';
 
 const missionsRepository = new MissionsRepository();
+const landsRepository = new LandsRepository();
 
 const missionsRouter = Router();
 
@@ -92,6 +95,29 @@ missionsRouter.delete(
       id,
     });
     return response.json({ ok: 'ok' });
+  },
+);
+
+/*
+  @route      POST /missions
+  @desc       Execute mission
+  @params     id
+  @access     Public
+*/
+missionsRouter.get(
+  '/execute/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (request, response) => {
+    const { id } = request.params;
+
+    const executeMissionService = new ExecuteMissionService(
+      missionsRepository,
+      landsRepository,
+    );
+    const resultMission = await executeMissionService.execute({
+      id,
+    });
+    return response.json({ resultMission });
   },
 );
 
