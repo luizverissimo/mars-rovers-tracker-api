@@ -18,11 +18,11 @@ class ListByIdLandService {
     (Document<unknown, ILand> & ILand & { _id: Types.ObjectId }) | null
   > {
     const idParsed = new Types.ObjectId(id);
-    const rover = await this.landsRepository.listById({
+    const land = await this.landsRepository.listById({
       id: idParsed,
     });
 
-    return rover;
+    return land;
   }
 }
 export default ListByIdLandService;

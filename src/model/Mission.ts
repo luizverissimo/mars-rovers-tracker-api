@@ -10,7 +10,7 @@ export interface IRoversMission {
   };
 }
 
-interface IMission {
+export interface IMission {
   name: string;
   roversMission: IRoversMission[];
   landId: Types.ObjectId;

@@ -45,9 +45,9 @@ class EditLandService {
       throw new AppError('User not modified!');
     }
 
-    const rover = await this.landRepository.listById({ id: idParsed });
+    const land = await this.landRepository.listById({ id: idParsed });
 
-    return rover;
+    return land;
   }
 }
 export default EditLandService;

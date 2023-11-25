@@ -14,11 +14,11 @@ class DeleteLandService {
   }
   public async execute({ id }: Request): Promise<UpdateResult<Document<null>>> {
     const idParsed = new Types.ObjectId(id);
-    const rover = await this.landsRepository.delete({
+    const land = await this.landsRepository.delete({
       id: idParsed,
     });
 
-    return rover;
+    return land;
   }
 }
 export default DeleteLandService;
