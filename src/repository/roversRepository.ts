@@ -3,7 +3,7 @@ import Rover from '../model/Rover';
 import { UpdateResult } from 'mongodb';
 
 interface IId {
-  id: string;
+  id: Types.ObjectId;
 }
 
 interface IRoverEdit {
@@ -28,8 +28,7 @@ class RoversRepository {
   }: IId): Promise<
     (Document<unknown, IRover> & IRover & { _id: Types.ObjectId }) | null
   > {
-    const idParsed = new Types.ObjectId(id);
-    const rover = await Rover.getModel().findOne({ _id: idParsed });
+    const rover = await Rover.getModel().findOne({ _id: id });
     return rover;
   }
 
@@ -38,7 +37,7 @@ class RoversRepository {
     const response = await Rover.getModel()
       .updateOne(
         {
-          _id: new Types.ObjectId(id),
+          _id: id,
         },
         {
           $set: {
@@ -56,7 +55,7 @@ class RoversRepository {
     const rover = await Rover.getModel()
       .updateOne(
         {
-          _id: new Types.ObjectId(id),
+          _id: id,
         },
         {
           $set: {

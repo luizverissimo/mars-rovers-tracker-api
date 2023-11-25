@@ -1,8 +1,7 @@
-import { Document, Schema, Types } from 'mongoose';
-import Rover, { IRover } from '../../model/Rover';
+import { Document, Types } from 'mongoose';
+import { IRover } from '../../model/Rover';
 import RoversRepository from '../../repository/roversRepository';
 import AppError from '../../errors/AppError';
-import { UpdateResult } from 'mongodb';
 
 interface Request {
   id: string;
@@ -40,7 +39,7 @@ class EditRoverService {
       throw new AppError('User not modified!');
     }
 
-    const rover = await this.roversRepository.listById({ id });
+    const rover = await this.roversRepository.listById({ id: idParsed });
 
     return rover;
   }

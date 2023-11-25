@@ -1,4 +1,4 @@
-import { Document, Schema, Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { IRover } from '../../model/Rover';
 import RoversRepository from '../../repository/roversRepository';
 
@@ -17,8 +17,9 @@ class ListByIdRoverService {
   }: Request): Promise<
     (Document<unknown, IRover> & IRover & { _id: Types.ObjectId }) | null
   > {
+    const idParsed = new Types.ObjectId(id);
     const rover = await this.roversRepository.listById({
-      id,
+      id: idParsed,
     });
 
     return rover;

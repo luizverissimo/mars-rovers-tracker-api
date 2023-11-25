@@ -1,6 +1,6 @@
 import { Schema, Types, model } from 'mongoose';
 
-interface ILand {
+export interface ILand {
   name: string;
   horizontalRange: number;
   verticalRange: number;

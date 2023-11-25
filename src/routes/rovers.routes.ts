@@ -78,7 +78,7 @@ roversRouter.put(
 );
 
 /*
-  @route      POST /rovers
+  @route      DELETE /rovers
   @params     id
   @desc       Delete rover
   @access     Public

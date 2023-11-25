@@ -1,7 +1,5 @@
-import { Document, Schema, Types } from 'mongoose';
-import Rover from '../../model/Rover';
+import { Document, Types } from 'mongoose';
 import RoversRepository from '../../repository/roversRepository';
-import AppError from '../../errors/AppError';
 import { UpdateResult } from 'mongodb';
 
 interface Request {
@@ -15,8 +13,9 @@ class DeleteRoverService {
     this.roversRepository = roversRepository;
   }
   public async execute({ id }: Request): Promise<UpdateResult<Document<null>>> {
+    const idParsed = new Types.ObjectId(id);
     const rover = await this.roversRepository.delete({
-      id,
+      id: idParsed,
     });
 
     return rover;
