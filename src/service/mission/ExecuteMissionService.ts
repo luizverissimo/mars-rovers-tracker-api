@@ -8,7 +8,7 @@ import { SPIN_LEFT, SPIN_RIGHT, Orientation } from '../../constants';
 
 interface RoverPathExecuted {
   roverId: Types.ObjectId;
-  current_orientation: string;
+  current_orientation: Orientation;
   current_possition_x: number;
   current_possition_y: number;
 }
@@ -38,7 +38,10 @@ class ExecuteMissionService {
     }
   }
 
-  private roverPathGenarator(land: ILand, rover: IRoversMission) {
+  private roverPathGenarator(
+    land: ILand,
+    rover: IRoversMission,
+  ): RoverPathExecuted {
     let current_orientation: Orientation = rover.intialPosition
       .orientation as Orientation;
     let current_possition_x: number = rover.intialPosition.x;

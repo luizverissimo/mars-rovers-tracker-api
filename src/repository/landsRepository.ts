@@ -1,10 +1,7 @@
 import { Document, Types } from 'mongoose';
 import Land from '../model/Land';
 import { UpdateResult } from 'mongodb';
-
-interface IId {
-  id: Types.ObjectId;
-}
+import { IId } from '../constants';
 
 interface ILand {
   name: string;

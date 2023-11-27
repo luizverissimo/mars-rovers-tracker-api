@@ -1,10 +1,7 @@
 import { Document, Types } from 'mongoose';
 import Mission, { IRoversMission } from '../model/Mission';
 import { UpdateResult } from 'mongodb';
-
-interface IId {
-  id: Types.ObjectId;
-}
+import { IId } from '../constants';
 
 interface IMissionEdit {
   id: Types.ObjectId;

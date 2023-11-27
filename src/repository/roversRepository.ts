@@ -1,10 +1,7 @@
 import { Document, Types } from 'mongoose';
 import Rover from '../model/Rover';
 import { UpdateResult } from 'mongodb';
-
-interface IId {
-  id: Types.ObjectId;
-}
+import { IId } from '../constants';
 
 interface IRoverEdit {
   id: Types.ObjectId;
