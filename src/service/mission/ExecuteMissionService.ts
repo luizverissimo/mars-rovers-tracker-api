@@ -4,6 +4,7 @@ import LandsRepository from '../../repository/landsRepository';
 import { IMission, IRoversMission } from '../../model/Mission';
 import AppError from '../../errors/AppError';
 import { ILand } from '../../model/Land';
+import { SPIN_LEFT, SPIN_RIGHT, Orientation } from '../../constants';
 
 interface RoverPathExecuted {
   roverId: Types.ObjectId;
@@ -38,7 +39,8 @@ class ExecuteMissionService {
   }
 
   private roverPathGenarator(land: ILand, rover: IRoversMission) {
-    let current_orientation = rover.intialPosition.orientation;
+    let current_orientation: Orientation = rover.intialPosition
+      .orientation as Orientation;
     let current_possition_x: number = rover.intialPosition.x;
     let current_possition_y: number = rover.intialPosition.y;
 
@@ -48,51 +50,29 @@ class ExecuteMissionService {
       switch (command) {
         case 'M':
           switch (current_orientation) {
-            case 'N':
+            case 'N' as Orientation:
               current_possition_y += 1;
               break;
-            case 'S':
+            case 'S' as Orientation:
               current_possition_y -= 1;
               break;
-            case 'E':
+            case 'E' as Orientation:
               current_possition_x += 1;
               break;
-            case 'W':
+            case 'W' as Orientation:
               current_possition_x -= 1;
               break;
           }
           break;
         case 'L':
-          switch (current_orientation) {
-            case 'N':
-              current_orientation = 'W';
-              break;
-            case 'S':
-              current_orientation = 'E';
-              break;
-            case 'E':
-              current_orientation = 'N';
-              break;
-            case 'W':
-              current_orientation = 'S';
-              break;
-          }
+          current_orientation = SPIN_LEFT[
+            `${current_orientation}` as keyof typeof SPIN_LEFT
+          ] as Orientation;
           break;
         case 'R':
-          switch (current_orientation) {
-            case 'N':
-              current_orientation = 'E';
-              break;
-            case 'S':
-              current_orientation = 'W';
-              break;
-            case 'E':
-              current_orientation = 'S';
-              break;
-            case 'W':
-              current_orientation = 'N';
-              break;
-          }
+          current_orientation = SPIN_RIGHT[
+            `${current_orientation}` as keyof typeof SPIN_RIGHT
+          ] as Orientation;
           break;
         default:
           break;
