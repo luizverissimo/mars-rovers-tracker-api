@@ -12,7 +12,7 @@ interface IUser {
 }
 
 interface IUserEdit {
-  id: string;
+  id: Types.ObjectId;
   name: string;
   email: string;
 }
@@ -43,7 +43,7 @@ class UsersRepository {
   > {
     const user = await User.getModel()
       .findOne({
-        _id: new Types.ObjectId(id),
+        _id: id,
         removed: false,
       })
       .lean();
@@ -60,7 +60,7 @@ class UsersRepository {
     const response = await User.getModel()
       .updateOne(
         {
-          _id: new Types.ObjectId(id),
+          _id: id,
         },
         {
           $set: {
@@ -82,7 +82,7 @@ class UsersRepository {
     const response = await User.getModel()
       .updateOne(
         {
-          _id: new Types.ObjectId(id),
+          _id: id,
         },
         {
           $set: {

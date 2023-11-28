@@ -1,7 +1,7 @@
 import { Document, Types } from 'mongoose';
 import Land from '../model/Land';
 import { UpdateResult } from 'mongodb';
-import { IId } from '../constants';
+import { IId, IIdUserName } from '../constants';
 
 interface ILand {
   name: string;
@@ -28,6 +28,7 @@ class LandsRepository {
     await land.newModel().save();
     return land;
   }
+
   public async listById({
     id,
   }: IId): Promise<
@@ -36,6 +37,21 @@ class LandsRepository {
     const land = await Land.getModel().findOne({ _id: id });
     return land;
   }
+
+  public async listByName({
+    name,
+    userId,
+  }: IIdUserName): Promise<
+    (Document<unknown, ILand> & ILand & { _id: Types.ObjectId }) | null
+  > {
+    const land = await Land.getModel().findOne({
+      name,
+      userId,
+      removed: false,
+    });
+    return land;
+  }
+
   public async edit({
     id,
     name,

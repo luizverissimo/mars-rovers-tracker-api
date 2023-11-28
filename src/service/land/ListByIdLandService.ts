@@ -1,6 +1,7 @@
 import { Document, Types } from 'mongoose';
 import { ILand } from '../../model/Land';
 import LandsRepository from '../../repository/landsRepository';
+import AppError from '../../errors/AppError';
 
 interface Request {
   id: string;
@@ -17,6 +18,8 @@ class ListByIdLandService {
   }: Request): Promise<
     (Document<unknown, ILand> & ILand & { _id: Types.ObjectId }) | null
   > {
+    if (!id) new AppError('You must send land id!');
+
     const idParsed = new Types.ObjectId(id);
     const land = await this.landsRepository.listById({
       id: idParsed,

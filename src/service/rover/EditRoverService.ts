@@ -20,6 +20,10 @@ class EditRoverService {
   }: Request): Promise<
     (Document<unknown, IRover> & IRover & { _id: Types.ObjectId }) | null
   > {
+    if (!id) new AppError('You must send rover id!');
+
+    if (!name) new AppError('You must send rover name!');
+
     const idParsed = new Types.ObjectId(id);
 
     const response = await this.roversRepository.edit({
@@ -32,11 +36,11 @@ class EditRoverService {
     }
 
     if (response.matchedCount === 0) {
-      throw new AppError('User not found!');
+      throw new AppError('Rover not found!');
     }
 
     if (response.modifiedCount === 0) {
-      throw new AppError('User not modified!');
+      throw new AppError('Rover not modified!');
     }
 
     const rover = await this.roversRepository.listById({ id: idParsed });

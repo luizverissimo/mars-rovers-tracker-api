@@ -28,11 +28,17 @@ class EditUserService {
   }: Request): Promise<
     FlattenMaps<IUser & { _id: Types.ObjectId }> | null | undefined
   > {
-    if (!id) {
-      throw new AppError('Id is not sending o request!');
-    }
+    if (!id) new AppError('You must send user id!');
+    if (!name) new AppError('You must send user name!');
+    if (!email) new AppError('You must send user email!');
 
-    const response = await this.usersRepository.edit({ id, name, email });
+    const idParsed = new Types.ObjectId(id);
+
+    const response = await this.usersRepository.edit({
+      id: idParsed,
+      name,
+      email,
+    });
 
     if (!response) {
       throw new AppError('Connection database error!');
@@ -45,8 +51,6 @@ class EditUserService {
     if (response.modifiedCount === 0) {
       throw new AppError('User not modified!');
     }
-
-    const idParsed = new Types.ObjectId(id);
 
     const user = await this.usersRepository.listById({ id: idParsed });
 

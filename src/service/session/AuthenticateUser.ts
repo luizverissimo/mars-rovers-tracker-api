@@ -15,6 +15,10 @@ class AuthenticateUserService {
   }
 
   public async execute({ email, password }: Request): Promise<string | null> {
+    if (!email) new AppError('You must send user email!');
+
+    if (!password) new AppError('You must send user password!');
+
     const { JWT_SECRET } = process.env;
 
     if (!JWT_SECRET) {

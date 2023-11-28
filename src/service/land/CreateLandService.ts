@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import Rover from '../../model/Rover';
 import LandsRepository from '../../repository/landsRepository';
+import AppError from '../../errors/AppError';
 
 interface Request {
   name: string;
@@ -21,7 +22,22 @@ class CreateLandService {
     verticalRange,
     userId,
   }: Request): Promise<Rover | undefined> {
+    if (!name) new AppError('You must send land name!');
+
+    if (!horizontalRange) new AppError('You must send land horizontalRange!');
+
+    if (!verticalRange) new AppError('You must send land verticalRange!');
+
+    if (!userId) new AppError('You must send land user id!');
+
     const userIdParsed = new Types.ObjectId(userId);
+
+    const landExists = await this.landsRepository.listByName({
+      name,
+      userId: userIdParsed,
+    });
+
+    if (landExists) throw new AppError('This land already exists!');
 
     const land = await this.landsRepository.create({
       name,

@@ -14,9 +14,7 @@ class DeleteUserService {
   }
 
   public async execute({ id }: Request): Promise<void> {
-    if (!id) {
-      throw new AppError('Id is not sending o request!');
-    }
+    if (!id) new AppError('You must send user id!');
 
     const idParsed = new Types.ObjectId(id);
 
@@ -31,7 +29,7 @@ class DeleteUserService {
     }
 
     if (response.modifiedCount === 0) {
-      throw new AppError('User not modified!');
+      throw new AppError('User not deleted!');
     }
   }
 }

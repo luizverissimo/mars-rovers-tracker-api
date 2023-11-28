@@ -1,7 +1,7 @@
 import { Document, Types } from 'mongoose';
 import Mission, { IRoversMission } from '../model/Mission';
 import { UpdateResult } from 'mongodb';
-import { IId } from '../constants';
+import { IId, IIdUserName } from '../constants';
 
 interface IMissionEdit {
   id: Types.ObjectId;
@@ -40,6 +40,20 @@ class MissionsRepository {
     (Document<unknown, IMission> & IMission & { _id: Types.ObjectId }) | null
   > {
     const mission = await Mission.getModel().findOne({ _id: id });
+    return mission;
+  }
+
+  public async listByName({
+    name,
+    userId,
+  }: IIdUserName): Promise<
+    (Document<unknown, IMission> & IMission & { _id: Types.ObjectId }) | null
+  > {
+    const mission = await Mission.getModel().findOne({
+      name,
+      userId,
+      removed: false,
+    });
     return mission;
   }
 
