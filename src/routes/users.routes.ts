@@ -66,7 +66,7 @@ usersRouter.put(
 
     const user = await editUserService.execute({ id, name, email });
 
-    delete user.password;
+    delete user?.password;
 
     return response.json(user);
   },

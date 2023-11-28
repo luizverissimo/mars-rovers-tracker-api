@@ -11,6 +11,7 @@ export interface IRoversMission {
 }
 
 export interface IMission {
+  _id?: Types.ObjectId;
   name: string;
   roversMission: IRoversMission[];
   landId: Types.ObjectId;

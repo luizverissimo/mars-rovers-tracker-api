@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import AppError from '../../errors/AppError';
 import UsersRepository from '../../repository/usersRepository';
 
@@ -17,7 +18,9 @@ class DeleteUserService {
       throw new AppError('Id is not sending o request!');
     }
 
-    const response = await this.usersRepository.delete({ id });
+    const idParsed = new Types.ObjectId(id);
+
+    const response = await this.usersRepository.delete({ id: idParsed });
 
     if (!response) {
       throw new AppError('Connection database error!');

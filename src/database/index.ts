@@ -3,7 +3,11 @@ import AppError from '../errors/AppError';
 const { MONGO_URI } = process.env;
 
 class Database {
-  private connection: Promise<Mongoose>;
+  private connection: Mongoose | null;
+
+  constructor() {
+    this.connection = null;
+  }
 
   public async connect() {
     if (!MONGO_URI) {
@@ -12,7 +16,7 @@ class Database {
     this.setConnection(await mongoose.connect(`${MONGO_URI}`));
   }
 
-  public setConnection(connection: Promise<Mongoose>) {
+  public setConnection(connection: Mongoose) {
     this.connection = connection;
   }
 

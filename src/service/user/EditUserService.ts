@@ -5,7 +5,7 @@ import AppError from '../../errors/AppError';
 interface IUser {
   name: string;
   email: string;
-  password: string;
+  password?: string;
 }
 
 interface Request {
@@ -46,7 +46,9 @@ class EditUserService {
       throw new AppError('User not modified!');
     }
 
-    const user = await this.usersRepository.listById({ id });
+    const idParsed = new Types.ObjectId(id);
+
+    const user = await this.usersRepository.listById({ id: idParsed });
 
     return user;
   }

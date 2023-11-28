@@ -117,7 +117,7 @@ missionsRouter.get(
     const resultMission = await executeMissionService.execute({
       id,
     });
-    return response.json({ resultMission });
+    return response.json(resultMission);
   },
 );
 

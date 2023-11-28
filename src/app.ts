@@ -15,7 +15,7 @@ import passportMiddleware from './middlewares/passport';
 
 import AppError from './errors/AppError';
 
-new database().connect();
+if (process.env.NODE_ENV !== 'test') new database().connect();
 
 const app = express();
 

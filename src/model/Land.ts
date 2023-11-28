@@ -1,6 +1,7 @@
 import { Schema, Types, model } from 'mongoose';
 
 export interface ILand {
+  _id?: Types.ObjectId;
   name: string;
   horizontalRange: number;
   verticalRange: number;

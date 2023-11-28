@@ -24,14 +24,48 @@ interface Request {
 class ExecuteMissionService {
   private missionsRepository: MissionsRepository;
   private landsRepository: LandsRepository;
+  private missionExecuted: MissionExecuted;
 
-  private verifyPathIssues(
+  constructor(
+    missionsRepository: MissionsRepository,
+    landsRepository: LandsRepository,
+  ) {
+    this.missionsRepository = missionsRepository;
+    this.landsRepository = landsRepository;
+    this.missionExecuted = {} as MissionExecuted;
+  }
+
+  public setMissionExecuted(missionExecuted: MissionExecuted) {
+    this.missionExecuted = missionExecuted as MissionExecuted;
+  }
+
+  public getMissionExecuted(): MissionExecuted {
+    return this.missionExecuted;
+  }
+
+  private verifyCollisions(
+    current_possition_x: number,
+    current_possition_y: number,
+    lastsRoversPositions: RoverPathExecuted[],
+  ) {
+    lastsRoversPositions.forEach((lastRoverPosition: RoverPathExecuted) => {
+      const coordinatesRover = `${current_possition_x},${current_possition_y}`;
+      const coordinatesLastRover = `${lastRoverPosition.current_possition_x},${lastRoverPosition.current_possition_y}`;
+      if (coordinatesRover === coordinatesLastRover) {
+        throw new AppError('Rovers will collid!');
+      }
+    });
+  }
+
+  private verifyLandExceeds(
     land: ILand,
     current_possition_x: number,
     current_possition_y: number,
   ) {
-    const exceedsx = current_possition_x > land.horizontalRange;
-    const exceedsy = current_possition_y > land.verticalRange;
+    const exceedsx =
+      current_possition_x > land.horizontalRange || current_possition_x < 0;
+    const exceedsy =
+      current_possition_y > land.verticalRange || current_possition_y < 0;
 
     if (exceedsx || exceedsy) {
       throw new AppError('The rover exceeds the limits of plateau.');
@@ -41,6 +75,7 @@ class ExecuteMissionService {
   private roverPathGenarator(
     land: ILand,
     rover: IRoversMission,
+    lastsRoversPositions: RoverPathExecuted[],
   ): RoverPathExecuted {
     let current_orientation: Orientation = rover.intialPosition
       .orientation as Orientation;
@@ -80,8 +115,16 @@ class ExecuteMissionService {
         default:
           break;
       }
-      this.verifyPathIssues(land, current_possition_x, current_possition_y);
+      this.verifyLandExceeds(land, current_possition_x, current_possition_y);
+      if (lastsRoversPositions) {
+        this.verifyCollisions(
+          current_possition_x,
+          current_possition_y,
+          lastsRoversPositions,
+        );
+      }
     });
+
     return {
       roverId: rover.roverId,
       current_orientation,
@@ -90,13 +133,6 @@ class ExecuteMissionService {
     };
   }
 
-  constructor(
-    missionsRepository: MissionsRepository,
-    landsRepository: LandsRepository,
-  ) {
-    this.missionsRepository = missionsRepository;
-    this.landsRepository = landsRepository;
-  }
   public async execute({ id }: Request): Promise<MissionExecuted> {
     const idParsed = new Types.ObjectId(id);
 
@@ -118,15 +154,25 @@ class ExecuteMissionService {
       throw new AppError('Land not found!');
     }
 
-    const missionExecuted = {
-      resultsMission: [],
-    } as MissionExecuted;
+    const missionPathsGenerated: RoverPathExecuted[] =
+      [] as RoverPathExecuted[];
 
     mission?.roversMission.forEach(rover => {
-      missionExecuted.resultsMission.push(this.roverPathGenarator(land, rover));
+      missionPathsGenerated.push(
+        this.roverPathGenarator(
+          land,
+          rover,
+          missionPathsGenerated,
+        ) as RoverPathExecuted,
+      );
     });
 
-    return missionExecuted;
+    const missionExecuted = {
+      resultsMission: missionPathsGenerated,
+    } as MissionExecuted;
+    this.setMissionExecuted(missionExecuted);
+
+    return this.getMissionExecuted();
   }
 }
 
