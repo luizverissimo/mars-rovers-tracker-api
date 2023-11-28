@@ -35,6 +35,7 @@ class CreateMissionService {
       name,
       userId: userIdParsed,
     });
+
     if (missionExists) throw new AppError('This mission already exists!');
 
     const mission = await this.missionsRepository.create({

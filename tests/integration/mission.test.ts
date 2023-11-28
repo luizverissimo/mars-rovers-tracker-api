@@ -2,7 +2,11 @@ import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import app from '../../src/app';
 import request from 'supertest';
-import { createMission } from '../mock/mission.mock';
+import {
+  createMissionColission,
+  createMissionExceedsLand,
+  createMissionSuccessfully,
+} from '../mock/mission.mock';
 import Mission, { IMission } from '../../src/model/Mission';
 import User, { IUser } from '../../src/model/User';
 import Land, { ILand } from '../../src/model/Land';
@@ -80,7 +84,7 @@ describe('Mission Controller', () => {
 
   describe('create mission', () => {
     it('should return 200 and the mission created', async () => {
-      const missionJSON = createMission(landId, userId);
+      const missionJSON = createMissionSuccessfully(landId, userId);
       const response = await request(app)
         .post('/missions')
         .send(missionJSON)
@@ -99,7 +103,6 @@ describe('Mission Controller', () => {
       const response = await request(app)
         .get(`/missions/execute/${missionId}`)
         .set('Authorization', token);
-      console.log(response.body);
       expect(response.status).toBe(200);
       expect(response.body.resultsMission[0].current_orientation).toBe('N');
       expect(response.body.resultsMission[0].current_possition_x).toBe(1);
@@ -107,6 +110,56 @@ describe('Mission Controller', () => {
       expect(response.body.resultsMission[1].current_orientation).toBe('S');
       expect(response.body.resultsMission[1].current_possition_x).toBe(2);
       expect(response.body.resultsMission[1].current_possition_y).toBe(3);
+    });
+  });
+
+  describe('Execute mission error', () => {
+    it('should return 400 and exceeds land', async () => {
+      const missionJSON = createMissionExceedsLand(landId, userId);
+      const responseCreate = await request(app)
+        .post('/missions')
+        .send(missionJSON)
+        .set('content-type', 'application/json')
+        .set('Authorization', token);
+      expect(responseCreate.status).toBe(200);
+
+      const mission: IMission | null = await Mission.getModel()
+        .findOne({ name: 'mission 2' })
+        .lean();
+      missionId = mission?._id?.toString();
+
+      const responseExecute = await request(app)
+        .get(`/missions/execute/${missionId}`)
+        .set('Authorization', token);
+
+      expect(responseExecute.status).toBe(400);
+      expect(responseExecute.body.message).toBe(
+        'The rover exceeds the limits of plateau.',
+      );
+    });
+  });
+
+  describe('Execute mission error', () => {
+    it('should return 400 and colid rovers', async () => {
+      const missionJSON = createMissionColission(landId, userId);
+      const responseCreate = await request(app)
+        .post('/missions')
+        .send(missionJSON)
+        .set('content-type', 'application/json')
+        .set('Authorization', token);
+      expect(responseCreate.status).toBe(200);
+
+      const mission: IMission | null = await Mission.getModel()
+        .findOne({ name: 'mission 3' })
+        .lean();
+      missionId = mission?._id?.toString();
+
+      const responseExecute = await request(app)
+        .get(`/missions/execute/${missionId}`)
+        .set('Authorization', token);
+
+      expect(responseExecute.status).toBe(400);
+      expect(responseExecute.body.message).toBe('Rovers will collid!');
     });
   });
 });
