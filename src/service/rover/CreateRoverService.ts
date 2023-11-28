@@ -15,9 +15,9 @@ class CreateRoverService {
     this.roversRepository = roversRepository;
   }
   public async execute({ name, userId }: Request): Promise<Rover | undefined> {
-    if (!name) new AppError('You must send rover name!');
+    if (!name) throw new AppError('You must send rover name!');
 
-    if (!userId) new AppError('You must send user id!');
+    if (!userId) throw new AppError('You must send user id!');
 
     const userIdParsed = new Types.ObjectId(userId);
 
@@ -26,7 +26,7 @@ class CreateRoverService {
       userId: userIdParsed,
     });
 
-    if (roverExists) new AppError('This rover name already exists!');
+    if (roverExists) throw new AppError('This rover name already exists!');
 
     const rover = await this.roversRepository.create({
       name,

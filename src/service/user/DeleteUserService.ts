@@ -14,7 +14,7 @@ class DeleteUserService {
   }
 
   public async execute({ id }: Request): Promise<void> {
-    if (!id) new AppError('You must send user id!');
+    if (!id) throw new AppError('You must send user id!');
 
     const idParsed = new Types.ObjectId(id);
 

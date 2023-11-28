@@ -24,13 +24,14 @@ class EditLandService {
   }: Request): Promise<
     (Document<unknown, ILand> & ILand & { _id: Types.ObjectId }) | null
   > {
-    if (!id) new AppError('You must send land id!');
+    if (!id) throw new AppError('You must send land id!');
 
-    if (!name) new AppError('You must send land name!');
+    if (!name) throw new AppError('You must send land name!');
 
-    if (!horizontalRange) new AppError('You must send land horizontalRange!');
+    if (!horizontalRange)
+      throw new AppError('You must send land horizontalRange!');
 
-    if (!verticalRange) new AppError('You must send land verticalRange!');
+    if (!verticalRange) throw new AppError('You must send land verticalRange!');
 
     const idParsed = new Types.ObjectId(id);
 

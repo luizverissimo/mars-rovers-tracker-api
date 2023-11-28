@@ -28,9 +28,9 @@ class EditUserService {
   }: Request): Promise<
     FlattenMaps<IUser & { _id: Types.ObjectId }> | null | undefined
   > {
-    if (!id) new AppError('You must send user id!');
-    if (!name) new AppError('You must send user name!');
-    if (!email) new AppError('You must send user email!');
+    if (!id) throw new AppError('You must send user id!');
+    if (!name) throw new AppError('You must send user name!');
+    if (!email) throw new AppError('You must send user email!');
 
     const idParsed = new Types.ObjectId(id);
 

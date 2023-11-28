@@ -14,7 +14,7 @@ class DeleteRoverService {
     this.roversRepository = roversRepository;
   }
   public async execute({ id }: Request): Promise<UpdateResult<Document<null>>> {
-    if (!id) new AppError('You must send rover id!');
+    if (!id) throw new AppError('You must send rover id!');
 
     const idParsed = new Types.ObjectId(id);
 

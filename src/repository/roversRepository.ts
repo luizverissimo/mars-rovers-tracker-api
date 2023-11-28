@@ -2,7 +2,6 @@ import { Document, Types } from 'mongoose';
 import Rover from '../model/Rover';
 import { UpdateResult } from 'mongodb';
 import { IId, IIdUserName } from '../constants';
-import AppError from '../errors/AppError';
 
 interface IRoverEdit {
   id: Types.ObjectId;
@@ -28,8 +27,6 @@ class RoversRepository {
   > {
     const rover = await Rover.getModel().findOne({ _id: id });
 
-    if (!rover) new AppError('Rover not found!');
-
     return rover;
   }
 
@@ -44,8 +41,6 @@ class RoversRepository {
       userId,
       removed: false,
     });
-
-    if (!rover) new AppError('Rover not found!');
 
     return rover;
   }

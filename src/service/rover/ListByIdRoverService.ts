@@ -18,7 +18,7 @@ class ListByIdRoverService {
   }: Request): Promise<
     (Document<unknown, IRover> & IRover & { _id: Types.ObjectId }) | null
   > {
-    if (!id) new AppError('You must send rover id!');
+    if (!id) throw new AppError('You must send rover id!');
 
     const idParsed = new Types.ObjectId(id);
     const rover = await this.roversRepository.listById({

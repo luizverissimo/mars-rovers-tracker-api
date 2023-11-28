@@ -19,13 +19,13 @@ class ListUserByIdService {
   public async execute(
     id: string,
   ): Promise<FlattenMaps<IUser & { _id: Types.ObjectId }> | null | undefined> {
-    if (!id) new AppError('You must send user id!');
+    if (!id) throw new AppError('You must send user id!');
 
     const idParsed = new Types.ObjectId(id);
 
     const user = await this.usersRepository.listById({ id: idParsed });
 
-    if (!user) new AppError('User not found!');
+    if (!user) throw new AppError('User not found!');
 
     return user;
   }

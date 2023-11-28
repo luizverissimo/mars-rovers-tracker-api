@@ -14,7 +14,7 @@ class DeleteLandService {
     this.landsRepository = landsRepository;
   }
   public async execute({ id }: Request): Promise<UpdateResult<Document<null>>> {
-    if (!id) new AppError('You must send land id!');
+    if (!id) throw new AppError('You must send land id!');
 
     const idParsed = new Types.ObjectId(id);
     const response = await this.landsRepository.delete({

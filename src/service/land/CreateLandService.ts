@@ -22,13 +22,14 @@ class CreateLandService {
     verticalRange,
     userId,
   }: Request): Promise<Rover | undefined> {
-    if (!name) new AppError('You must send land name!');
+    if (!name) throw new AppError('You must send land name!');
 
-    if (!horizontalRange) new AppError('You must send land horizontalRange!');
+    if (!horizontalRange)
+      throw new AppError('You must send land horizontalRange!');
 
-    if (!verticalRange) new AppError('You must send land verticalRange!');
+    if (!verticalRange) throw new AppError('You must send land verticalRange!');
 
-    if (!userId) new AppError('You must send land user id!');
+    if (!userId) throw new AppError('You must send land user id!');
 
     const userIdParsed = new Types.ObjectId(userId);
 

@@ -22,10 +22,11 @@ class CreateMissionService {
     landId,
     userId,
   }: Request): Promise<Mission | undefined> {
-    if (!name) new AppError('You must send mission name!');
-    if (!roversMission) new AppError('You must send mission roversMission!');
-    if (!landId) new AppError('You must send mission landId!');
-    if (!userId) new AppError('You must send mission userId!');
+    if (!name) throw new AppError('You must send mission name!');
+    if (!roversMission)
+      throw new AppError('You must send mission roversMission!');
+    if (!landId) throw new AppError('You must send mission landId!');
+    if (!userId) throw new AppError('You must send mission userId!');
 
     const userIdParsed = new Types.ObjectId(userId);
     const landIdParsed = new Types.ObjectId(landId);

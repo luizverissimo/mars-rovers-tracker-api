@@ -1,6 +1,7 @@
 import { FlattenMaps, Types, UpdateWriteOpResult } from 'mongoose';
 import User from '../model/User';
 import { IId } from '../constants';
+
 interface IEmail {
   email: string;
 }

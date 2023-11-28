@@ -18,7 +18,7 @@ class ListByIdLandService {
   }: Request): Promise<
     (Document<unknown, ILand> & ILand & { _id: Types.ObjectId }) | null
   > {
-    if (!id) new AppError('You must send land id!');
+    if (!id) throw new AppError('You must send land id!');
 
     const idParsed = new Types.ObjectId(id);
     const land = await this.landsRepository.listById({
