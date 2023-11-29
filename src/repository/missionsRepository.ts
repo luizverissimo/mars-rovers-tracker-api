@@ -39,7 +39,10 @@ class MissionsRepository {
   }: IId): Promise<
     (Document<unknown, IMission> & IMission & { _id: Types.ObjectId }) | null
   > {
-    const mission = await Mission.getModel().findOne({ _id: id });
+    const mission = await Mission.getModel().findOne({
+      _id: id,
+      removed: false,
+    });
     return mission;
   }
 

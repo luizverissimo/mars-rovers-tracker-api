@@ -25,7 +25,7 @@ class RoversRepository {
   }: IId): Promise<
     (Document<unknown, IRover> & IRover & { _id: Types.ObjectId }) | null
   > {
-    const rover = await Rover.getModel().findOne({ _id: id });
+    const rover = await Rover.getModel().findOne({ _id: id, removed: false });
 
     return rover;
   }

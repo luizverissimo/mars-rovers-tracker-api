@@ -34,7 +34,7 @@ class LandsRepository {
   }: IId): Promise<
     (Document<unknown, ILand> & ILand & { _id: Types.ObjectId }) | null
   > {
-    const land = await Land.getModel().findOne({ _id: id });
+    const land = await Land.getModel().findOne({ _id: id, removed: false });
     return land;
   }
 
