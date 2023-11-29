@@ -1,7 +1,52 @@
 import { Orientation } from '../../src/constants';
-import { roverPathGenarator } from '../../src/service/mission/ExecuteMissionService';
+import {
+  RoverPathExecuted,
+  roverPathGenarator,
+  verifyCollisions,
+  verifyLandExceeds,
+} from '../../src/service/mission/ExecuteMissionService';
 
 describe('Mission Controller', () => {
+  it('should exceeds land x positive', () => {
+    const hasLandExceeds = verifyLandExceeds({
+      horizontalRange: 10,
+      verticalRange: 9,
+      current_possition_x: 11,
+      current_possition_y: 8,
+    });
+    expect(hasLandExceeds).toBe(true);
+  });
+
+  it('should exceeds land y positive', () => {
+    const hasLandExceeds = verifyLandExceeds({
+      horizontalRange: 9,
+      verticalRange: 8,
+      current_possition_x: 8,
+      current_possition_y: 10,
+    });
+    expect(hasLandExceeds).toBe(true);
+  });
+
+  it('should exceeds land x negative', () => {
+    const hasLandExceeds = verifyLandExceeds({
+      horizontalRange: 9,
+      verticalRange: 8,
+      current_possition_x: -1,
+      current_possition_y: 10,
+    });
+    expect(hasLandExceeds).toBe(true);
+  });
+
+  it('should exceeds land y negative', () => {
+    const hasLandExceeds = verifyLandExceeds({
+      horizontalRange: 9,
+      verticalRange: 8,
+      current_possition_x: 8,
+      current_possition_y: -1,
+    });
+    expect(hasLandExceeds).toBe(true);
+  });
+
   it('should return rover positions', () => {
     const { current_orientation, current_possition_y, current_possition_x } =
       roverPathGenarator({
@@ -17,6 +62,21 @@ describe('Mission Controller', () => {
     expect(current_orientation).toBe('N');
     expect(current_possition_x).toBe(1);
     expect(current_possition_y).toBe(3);
+  });
+
+  it('should return colision', () => {
+    const hasRoverCollisions = verifyCollisions({
+      current_possition_x: 1,
+      current_possition_y: 3,
+      lastsRoversPositions: [
+        {
+          current_possition_x: 1,
+          current_possition_y: 3,
+        } as RoverPathExecuted,
+      ],
+    });
+
+    expect(hasRoverCollisions).toBe(true);
   });
 
   it('should return rover positions with last rover position', () => {

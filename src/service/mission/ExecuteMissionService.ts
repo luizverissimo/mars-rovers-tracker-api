@@ -6,6 +6,19 @@ import AppError from '../../errors/AppError';
 import { ILand } from '../../model/Land';
 import { SPIN_LEFT, SPIN_RIGHT, Orientation } from '../../constants';
 
+interface IVerifyLandExceeds {
+  horizontalRange: number;
+  verticalRange: number;
+  current_possition_x: number;
+  current_possition_y: number;
+}
+
+interface IVerifyCollisions {
+  current_possition_x: number;
+  current_possition_y: number;
+  lastsRoversPositions: RoverPathExecuted[];
+}
+
 interface IRoverPathGenarator {
   pathCommands: string;
   current_orientation: Orientation;
@@ -16,7 +29,7 @@ interface IRoverPathGenarator {
   verticalRange: number;
 }
 
-interface RoverPathExecuted {
+export interface RoverPathExecuted {
   roverId?: Types.ObjectId;
   current_orientation: Orientation;
   current_possition_x: number;
@@ -31,34 +44,39 @@ interface Request {
   id: string;
 }
 
-export function verifyCollisions(
-  current_possition_x: number,
-  current_possition_y: number,
-  lastsRoversPositions: RoverPathExecuted[],
-) {
-  lastsRoversPositions.forEach((lastRoverPosition: RoverPathExecuted) => {
+export function verifyCollisions({
+  current_possition_x,
+  current_possition_y,
+  lastsRoversPositions,
+}: IVerifyCollisions) {
+  let hasRoversColisions = false;
+  lastsRoversPositions.every((lastRoverPosition: RoverPathExecuted) => {
     const coordinatesRover = `${current_possition_x},${current_possition_y}`;
     const coordinatesLastRover = `${lastRoverPosition.current_possition_x},${lastRoverPosition.current_possition_y}`;
     if (coordinatesRover === coordinatesLastRover) {
-      throw new AppError('Rovers will collid!');
+      hasRoversColisions = true;
+      return false;
     }
   });
+  return hasRoversColisions;
 }
 
-export function verifyLandExceeds(
-  horizontalRange: number,
-  verticalRange: number,
-  current_possition_x: number,
-  current_possition_y: number,
-) {
+export function verifyLandExceeds({
+  horizontalRange,
+  verticalRange,
+  current_possition_x,
+  current_possition_y,
+}: IVerifyLandExceeds) {
   const exceedsx =
     current_possition_x > horizontalRange || current_possition_x < 0;
+
   const exceedsy =
     current_possition_y > verticalRange || current_possition_y < 0;
 
   if (exceedsx || exceedsy) {
-    throw new AppError('The rover exceeds the limits of plateau.');
+    return true;
   }
+  return false;
 }
 
 export function roverPathGenarator({
@@ -103,17 +121,21 @@ export function roverPathGenarator({
       default:
         break;
     }
-    verifyLandExceeds(
+    const hasLandExceeds = verifyLandExceeds({
       horizontalRange,
       verticalRange,
       current_possition_x,
       current_possition_y,
-    );
-    verifyCollisions(
+    });
+    if (hasLandExceeds)
+      throw new AppError('The rover exceeds the limits of plateau.');
+
+    const hasRoverCollisions = verifyCollisions({
       current_possition_x,
       current_possition_y,
       lastsRoversPositions,
-    );
+    });
+    if (hasRoverCollisions) throw new AppError('Rovers will collid!');
   });
 
   return { current_orientation, current_possition_y, current_possition_x };
