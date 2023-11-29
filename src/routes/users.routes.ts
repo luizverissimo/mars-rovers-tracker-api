@@ -6,8 +6,6 @@ import ListUserByIdService from '../service/user/ListByIdUserService';
 import EditUserService from '../service/user/EditUserService';
 import DeleteUserService from '../service/user/DeleteUserService';
 
-const usersRepository = new UsersRepository();
-
 const usersRouter = Router();
 
 /*
@@ -19,7 +17,7 @@ const usersRouter = Router();
 usersRouter.post('/', async (request, response) => {
   const { name, email, password } = request.body;
 
-  const createUserservice = new CreateUserService(usersRepository);
+  const createUserservice = new CreateUserService();
 
   const user = await createUserservice.execute({
     name,
@@ -41,7 +39,7 @@ usersRouter.get(
   async (request, response) => {
     const { id } = request.params;
 
-    const listUserByIdService = new ListUserByIdService(usersRepository);
+    const listUserByIdService = new ListUserByIdService();
 
     const user = await listUserByIdService.execute(id);
 
@@ -62,7 +60,7 @@ usersRouter.put(
     const { id } = request.params;
     const { name, email } = request.body;
 
-    const editUserService = new EditUserService(usersRepository);
+    const editUserService = new EditUserService();
 
     const user = await editUserService.execute({ id, name, email });
 
@@ -84,7 +82,7 @@ usersRouter.delete(
   async (request, response) => {
     const { id } = request.params;
 
-    const deleteUserService = new DeleteUserService(usersRepository);
+    const deleteUserService = new DeleteUserService();
 
     await deleteUserService.execute({ id });
 

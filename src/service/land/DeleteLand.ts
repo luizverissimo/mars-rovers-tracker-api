@@ -10,8 +10,8 @@ interface Request {
 class DeleteLandService {
   private landsRepository: LandsRepository;
 
-  constructor(landsRepository: LandsRepository) {
-    this.landsRepository = landsRepository;
+  constructor() {
+    this.landsRepository = new LandsRepository();
   }
   public async execute({ id }: Request): Promise<UpdateResult<Document<null>>> {
     if (!id) throw new AppError('You must send land id!');

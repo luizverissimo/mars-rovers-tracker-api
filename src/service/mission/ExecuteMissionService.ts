@@ -23,15 +23,10 @@ interface Request {
 
 class ExecuteMissionService {
   private missionsRepository: MissionsRepository;
-  private landsRepository: LandsRepository;
   private missionExecuted: MissionExecuted;
 
-  constructor(
-    missionsRepository: MissionsRepository,
-    landsRepository: LandsRepository,
-  ) {
-    this.missionsRepository = missionsRepository;
-    this.landsRepository = landsRepository;
+  constructor() {
+    this.missionsRepository = new MissionsRepository();
     this.missionExecuted = {} as MissionExecuted;
   }
 
@@ -146,7 +141,8 @@ class ExecuteMissionService {
 
     const landIdParsed = new Types.ObjectId(mission?.landId);
 
-    const land: ILand | null = await this.landsRepository.listById({
+    const landsRepository = new LandsRepository();
+    const land: ILand | null = await landsRepository.listById({
       id: landIdParsed,
     });
 

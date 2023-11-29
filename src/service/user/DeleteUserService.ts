@@ -9,8 +9,8 @@ interface Request {
 class DeleteUserService {
   private usersRepository: UsersRepository;
 
-  constructor(usersRepository: UsersRepository) {
-    this.usersRepository = usersRepository;
+  constructor() {
+    this.usersRepository = new UsersRepository();
   }
 
   public async execute({ id }: Request): Promise<void> {

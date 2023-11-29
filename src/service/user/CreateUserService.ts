@@ -12,8 +12,8 @@ interface Request {
 class CreateUserService {
   private usersRepository: UsersRepository;
 
-  constructor(usersRepository: UsersRepository) {
-    this.usersRepository = usersRepository;
+  constructor() {
+    this.usersRepository = new UsersRepository();
   }
 
   public async execute({

@@ -10,8 +10,8 @@ interface Request {
 class ListByIdRoverService {
   private roversRepository: RoversRepository;
 
-  constructor(roversRepository: RoversRepository) {
-    this.roversRepository = roversRepository;
+  constructor() {
+    this.roversRepository = new RoversRepository();
   }
   public async execute({
     id,

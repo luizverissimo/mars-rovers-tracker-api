@@ -9,8 +9,8 @@ interface Request {
 class ListByIdMissionsService {
   private missionsRepository: MissionRepository;
 
-  constructor(missionsRepository: MissionRepository) {
-    this.missionsRepository = missionsRepository;
+  constructor() {
+    this.missionsRepository = new MissionRepository();
   }
   public async execute({
     id,

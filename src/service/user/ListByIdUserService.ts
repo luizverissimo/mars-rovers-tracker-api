@@ -1,7 +1,6 @@
 import { Types, FlattenMaps } from 'mongoose';
 import UsersRepository from '../../repository/usersRepository';
 import AppError from '../../errors/AppError';
-import { ObjectId } from 'mongodb';
 
 interface IUser {
   name: string;
@@ -12,8 +11,8 @@ interface IUser {
 class ListUserByIdService {
   private usersRepository: UsersRepository;
 
-  constructor(usersRepository: UsersRepository) {
-    this.usersRepository = usersRepository;
+  constructor() {
+    this.usersRepository = new UsersRepository();
   }
 
   public async execute(

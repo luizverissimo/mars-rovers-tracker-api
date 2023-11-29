@@ -1,15 +1,10 @@
 import { Router } from 'express';
 import passport from 'passport';
-import MissionsRepository from '../repository/missionsRepository';
 import CreateMissionService from '../service/mission/CreateMissionService';
 import ListByIdMissionsService from '../service/mission/ListByIdMissionService';
 import EditMissionService from '../service/mission/EditMissionService';
 import DeleteMissiondService from '../service/mission/DeleteMission';
 import ExecuteMissionService from '../service/mission/ExecuteMissionService';
-import LandsRepository from '../repository/landsRepository';
-
-const missionsRepository = new MissionsRepository();
-const landsRepository = new LandsRepository();
 
 const missionsRouter = Router();
 
@@ -24,7 +19,7 @@ missionsRouter.post(
   passport.authenticate('jwt', { session: false }),
   async (request, response) => {
     const { name, roversMission, landId, userId } = request.body;
-    const createMissionService = new CreateMissionService(missionsRepository);
+    const createMissionService = new CreateMissionService();
     const mission = await createMissionService.execute({
       name,
       roversMission,
@@ -45,9 +40,7 @@ missionsRouter.get(
   passport.authenticate('jwt', { session: false }),
   async (request, response) => {
     const { id } = request.params;
-    const listByIdMissionsService = new ListByIdMissionsService(
-      missionsRepository,
-    );
+    const listByIdMissionsService = new ListByIdMissionsService();
     const mission = await listByIdMissionsService.execute({
       id,
     });
@@ -68,7 +61,7 @@ missionsRouter.put(
   async (request, response) => {
     const { name, roversMission, landId } = request.body;
     const { id } = request.params;
-    const editMissionService = new EditMissionService(missionsRepository);
+    const editMissionService = new EditMissionService();
     const mission = await editMissionService.execute({
       id,
       name,
@@ -90,7 +83,7 @@ missionsRouter.delete(
   passport.authenticate('jwt', { session: false }),
   async (request, response) => {
     const { id } = request.params;
-    const deleteMissiondService = new DeleteMissiondService(missionsRepository);
+    const deleteMissiondService = new DeleteMissiondService();
     await deleteMissiondService.execute({
       id,
     });
@@ -110,10 +103,7 @@ missionsRouter.get(
   async (request, response) => {
     const { id } = request.params;
 
-    const executeMissionService = new ExecuteMissionService(
-      missionsRepository,
-      landsRepository,
-    );
+    const executeMissionService = new ExecuteMissionService();
     const resultMission = await executeMissionService.execute({
       id,
     });

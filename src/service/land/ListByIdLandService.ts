@@ -10,8 +10,8 @@ interface Request {
 class ListByIdLandService {
   private landsRepository: LandsRepository;
 
-  constructor(landsRepository: LandsRepository) {
-    this.landsRepository = landsRepository;
+  constructor() {
+    this.landsRepository = new LandsRepository();
   }
   public async execute({
     id,

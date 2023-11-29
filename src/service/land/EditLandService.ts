@@ -13,8 +13,8 @@ interface Request {
 class EditLandService {
   private landRepository: LandRepository;
 
-  constructor(landRepository: LandRepository) {
-    this.landRepository = landRepository;
+  constructor() {
+    this.landRepository = new LandRepository();
   }
   public async execute({
     id,
@@ -26,12 +26,10 @@ class EditLandService {
   > {
     if (!id) throw new AppError('You must send land id!');
 
-    if (!name) throw new AppError('You must send land name!');
-
-    if (!horizontalRange)
-      throw new AppError('You must send land horizontalRange!');
-
-    if (!verticalRange) throw new AppError('You must send land verticalRange!');
+    if (!name && !horizontalRange && !verticalRange)
+      throw new AppError(
+        'You must send land name, horizontal or vertical range!',
+      );
 
     const idParsed = new Types.ObjectId(id);
 

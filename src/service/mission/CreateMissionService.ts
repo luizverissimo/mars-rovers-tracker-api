@@ -2,19 +2,28 @@ import { Types } from 'mongoose';
 import Mission, { IRoversMission } from '../../model/Mission';
 import MissionsRepository from '../../repository/missionsRepository';
 import AppError from '../../errors/AppError';
+import LandsRepository from '../../repository/landsRepository';
+import UsersRepository from '../../repository/usersRepository';
+import RoversRepository from '../../repository/roversRepository';
 
 interface Request {
   name: string;
-  roversMission: object[];
+  roversMission: IRoversMission[];
   landId: string;
   userId: string;
 }
 
 class CreateMissionService {
   private missionsRepository: MissionsRepository;
+  private landsRepository: LandsRepository;
+  private usersRepository: UsersRepository;
+  private roversRepository: RoversRepository;
 
-  constructor(missionsRepository: MissionsRepository) {
-    this.missionsRepository = missionsRepository;
+  constructor() {
+    this.missionsRepository = new MissionsRepository();
+    this.landsRepository = new LandsRepository();
+    this.usersRepository = new UsersRepository();
+    this.roversRepository = new RoversRepository();
   }
   public async execute({
     name,
@@ -30,6 +39,24 @@ class CreateMissionService {
 
     const userIdParsed = new Types.ObjectId(userId);
     const landIdParsed = new Types.ObjectId(landId);
+
+    const landsExists = await this.landsRepository.listById({
+      id: landIdParsed,
+    });
+    if (!landsExists) throw new AppError('Land not found!');
+
+    const userExists = await this.usersRepository.listById({
+      id: userIdParsed,
+    });
+    if (!userExists) throw new AppError('User not found!');
+
+    for (const key in roversMission) {
+      const userIdParsed = new Types.ObjectId(roversMission[key].roverId);
+      const roversExists = await this.roversRepository.listById({
+        id: userIdParsed,
+      });
+      if (!roversExists) throw new AppError('Rover not found!');
+    }
 
     const missionExists = await this.missionsRepository.listByName({
       name,

@@ -1,12 +1,9 @@
 import { Router } from 'express';
 import passport from 'passport';
-import LandsRepository from '../repository/landsRepository';
 import CreateLandService from '../service/land/CreateLandService';
 import ListByIdRoverService from '../service/land/ListByIdLandService';
 import EditLandService from '../service/land/EditLandService';
 import DeleteLandService from '../service/land/DeleteLand';
-
-const landsRepository = new LandsRepository();
 
 const landsRouter = Router();
 
@@ -22,7 +19,7 @@ landsRouter.post(
   async (request, response) => {
     const { name, horizontalRange, verticalRange, userId } = request.body;
 
-    const createLandService = new CreateLandService(landsRepository);
+    const createLandService = new CreateLandService();
 
     const land = await createLandService.execute({
       name,
@@ -46,7 +43,7 @@ landsRouter.get(
   passport.authenticate('jwt', { session: false }),
   async (request, response) => {
     const { id } = request.params;
-    const listByIdLandService = new ListByIdRoverService(landsRepository);
+    const listByIdLandService = new ListByIdRoverService();
     const land = await listByIdLandService.execute({
       id,
     });
@@ -67,7 +64,7 @@ landsRouter.put(
   async (request, response) => {
     const { name, horizontalRange, verticalRange } = request.body;
     const { id } = request.params;
-    const editLandService = new EditLandService(landsRepository);
+    const editLandService = new EditLandService();
     const land = await editLandService.execute({
       id,
       name,
@@ -89,7 +86,7 @@ landsRouter.delete(
   passport.authenticate('jwt', { session: false }),
   async (request, response) => {
     const { id } = request.params;
-    const deleteLandService = new DeleteLandService(landsRepository);
+    const deleteLandService = new DeleteLandService();
     await deleteLandService.execute({
       id,
     });

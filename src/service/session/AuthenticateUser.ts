@@ -10,8 +10,8 @@ interface Request {
 class AuthenticateUserService {
   private usersRepository: UsersRepository;
 
-  constructor(usersRepository: UsersRepository) {
-    this.usersRepository = usersRepository;
+  constructor() {
+    this.usersRepository = new UsersRepository();
   }
 
   public async execute({ email, password }: Request): Promise<string | null> {

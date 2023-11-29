@@ -9,8 +9,8 @@ interface Request {
 class DeleteMissiondService {
   private missionsRepository: MissionsRepository;
 
-  constructor(missionsRepository: MissionsRepository) {
-    this.missionsRepository = missionsRepository;
+  constructor() {
+    this.missionsRepository = new MissionsRepository();
   }
   public async execute({ id }: Request): Promise<UpdateResult<Document<null>>> {
     const idParsed = new Types.ObjectId(id);

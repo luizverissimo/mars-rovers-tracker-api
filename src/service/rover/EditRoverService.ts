@@ -11,8 +11,8 @@ interface Request {
 class EditRoverService {
   private roversRepository: RoversRepository;
 
-  constructor(roversRepository: RoversRepository) {
-    this.roversRepository = roversRepository;
+  constructor() {
+    this.roversRepository = new RoversRepository();
   }
   public async execute({
     id,

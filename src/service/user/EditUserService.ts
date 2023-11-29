@@ -17,8 +17,8 @@ interface Request {
 class EditUserService {
   private usersRepository: UsersRepository;
 
-  constructor(usersRepository: UsersRepository) {
-    this.usersRepository = usersRepository;
+  constructor() {
+    this.usersRepository = new UsersRepository();
   }
 
   public async execute({
@@ -29,8 +29,8 @@ class EditUserService {
     FlattenMaps<IUser & { _id: Types.ObjectId }> | null | undefined
   > {
     if (!id) throw new AppError('You must send user id!');
-    if (!name) throw new AppError('You must send user name!');
-    if (!email) throw new AppError('You must send user email!');
+    if (!name && !email)
+      throw new AppError('You must send user name or email!');
 
     const idParsed = new Types.ObjectId(id);
 

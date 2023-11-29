@@ -1,12 +1,9 @@
 import { Router } from 'express';
 import passport from 'passport';
 import CreateRoverService from '../service/rover/CreateRoverService';
-import RoversRepository from '../repository/roversRepository';
 import ListByIdRoverService from '../service/rover/ListByIdRoverService';
 import EditRoverService from '../service/rover/EditRoverService';
 import DeleteRoverService from '../service/rover/DeleteRoverService';
-
-const roversRepository = new RoversRepository();
 
 const roversRouter = Router();
 
@@ -22,7 +19,7 @@ roversRouter.post(
   async (request, response) => {
     const { name, userId } = request.body;
 
-    const createRoverService = new CreateRoverService(roversRepository);
+    const createRoverService = new CreateRoverService();
 
     const rover = await createRoverService.execute({
       name,
@@ -44,7 +41,7 @@ roversRouter.get(
   async (request, response) => {
     const { id } = request.params;
 
-    const listByIdRoverService = new ListByIdRoverService(roversRepository);
+    const listByIdRoverService = new ListByIdRoverService();
 
     const rover = await listByIdRoverService.execute({ id });
 
@@ -66,7 +63,7 @@ roversRouter.put(
     const { id } = request.params;
     const { name } = request.body;
 
-    const editRoverService = new EditRoverService(roversRepository);
+    const editRoverService = new EditRoverService();
 
     const rover = await editRoverService.execute({
       id,
@@ -89,7 +86,7 @@ roversRouter.delete(
   async (request, response) => {
     const { id } = request.params;
 
-    const deleteRoverService = new DeleteRoverService(roversRepository);
+    const deleteRoverService = new DeleteRoverService();
 
     await deleteRoverService.execute({
       id,

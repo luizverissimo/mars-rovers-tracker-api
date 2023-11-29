@@ -13,8 +13,8 @@ interface Request {
 class EditMissionService {
   private missionsRepository: MissionsRepository;
 
-  constructor(missionsRepository: MissionsRepository) {
-    this.missionsRepository = missionsRepository;
+  constructor() {
+    this.missionsRepository = new MissionsRepository();
   }
   public async execute({
     id,

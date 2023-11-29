@@ -10,8 +10,8 @@ interface Request {
 class DeleteRoverService {
   private roversRepository: RoversRepository;
 
-  constructor(roversRepository: RoversRepository) {
-    this.roversRepository = roversRepository;
+  constructor() {
+    this.roversRepository = new RoversRepository();
   }
   public async execute({ id }: Request): Promise<UpdateResult<Document<null>>> {
     if (!id) throw new AppError('You must send rover id!');
