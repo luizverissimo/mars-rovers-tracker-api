@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import app from '../../src/app';
 import request from 'supertest';
@@ -10,25 +10,28 @@ import {
 import Mission, { IMission } from '../../src/model/Mission';
 import User, { IUser } from '../../src/model/User';
 import Land, { ILand } from '../../src/model/Land';
+import Rover, { IRover } from '../../src/model/Rover';
 
 let mongod: MongoMemoryServer;
 let token: string;
 let missionId: string | undefined;
 let userId: string | undefined;
 let landId: string | undefined;
+let rover1Id: string | undefined;
+let rover2Id: string | undefined;
 
 async function getToken() {
   await request(app)
     .post('/users')
     .send({
-      name: 'LuizVerissimo',
+      name: 'Luiz Verissimo',
       email: 'luizverissimosouza@gmail.com',
       password: '123',
     })
     .set('content-type', 'application/json');
 
   const user: IUser | null = await User.getModel()
-    .findOne({ name: 'LuizVerissimo' })
+    .findOne({ name: 'Luiz Verissimo' })
     .lean();
   userId = user?._id?.toString();
 
@@ -42,11 +45,53 @@ async function getToken() {
   token = response.body.token;
 }
 
+async function createLand() {
+  const userIdParsed = new Types.ObjectId(userId);
+  const land = new Land({
+    name: 'land 1',
+    horizontalRange: 10,
+    verticalRange: 9,
+    userId: userIdParsed,
+  });
+  await land.newModel().save();
+
+  const getLand: ILand | null = await Land.getModel()
+    .findOne({ name: 'land 1' })
+    .lean();
+  landId = getLand?._id?.toString();
+}
+async function createRovers() {
+  const userIdParsed = new Types.ObjectId(userId);
+  const rover1 = new Rover({
+    name: 'rover 1',
+    userId: userIdParsed,
+  });
+  await rover1.newModel().save();
+
+  const rover2 = new Rover({
+    name: 'rover 2',
+    userId: userIdParsed,
+  });
+  await rover2.newModel().save();
+
+  const getRover1: IRover | null = await Rover.getModel()
+    .findOne({ name: 'rover 1' })
+    .lean();
+  rover1Id = getRover1?._id?.toString();
+
+  const getRover2: IRover | null = await Rover.getModel()
+    .findOne({ name: 'rover 2' })
+    .lean();
+  rover2Id = getRover2?._id?.toString();
+}
+
 beforeAll(async () => {
   mongod = await MongoMemoryServer.create();
   const uri = await mongod.getUri();
   await mongoose.connect(uri);
   await getToken();
+  await createLand();
+  await createRovers();
 });
 afterAll(async () => {
   await mongoose.connection.dropDatabase();
@@ -62,34 +107,20 @@ afterAll(async () => {
 // });
 
 describe('Mission Controller', () => {
-  describe('create land', () => {
-    it('should return 200 and the land created', async () => {
-      const response = await request(app)
-        .post('/lands')
-        .send({
-          name: 'Land 1',
-          horizontalRange: 10,
-          verticalRange: 10,
-          userId,
-        })
-        .set('content-type', 'application/json')
-        .set('Authorization', token);
-      const land: ILand | null = await Land.getModel()
-        .findOne({ name: 'Land 1' })
-        .lean();
-      landId = land?._id?.toString();
-      expect(response.status).toBe(200);
-    });
-  });
-
   describe('create mission', () => {
     it('should return 200 and the mission created', async () => {
-      const missionJSON = createMissionSuccessfully(landId, userId);
+      const missionJSON = createMissionSuccessfully(
+        landId,
+        userId,
+        rover1Id,
+        rover2Id,
+      );
       const response = await request(app)
         .post('/missions')
         .send(missionJSON)
         .set('content-type', 'application/json')
         .set('Authorization', token);
+
       expect(response.status).toBe(200);
       const mission: IMission | null = await Mission.getModel()
         .findOne({ name: 'mission 1' })
@@ -115,7 +146,7 @@ describe('Mission Controller', () => {
 
   describe('Execute mission error', () => {
     it('should return 400 and exceeds land', async () => {
-      const missionJSON = createMissionExceedsLand(landId, userId);
+      const missionJSON = createMissionExceedsLand(landId, userId, rover1Id);
       const responseCreate = await request(app)
         .post('/missions')
         .send(missionJSON)
@@ -141,7 +172,12 @@ describe('Mission Controller', () => {
 
   describe('Execute mission error', () => {
     it('should return 400 and colid rovers', async () => {
-      const missionJSON = createMissionColission(landId, userId);
+      const missionJSON = createMissionColission(
+        landId,
+        userId,
+        rover1Id,
+        rover2Id,
+      );
       const responseCreate = await request(app)
         .post('/missions')
         .send(missionJSON)

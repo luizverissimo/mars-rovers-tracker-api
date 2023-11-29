@@ -6,8 +6,18 @@ import AppError from '../../errors/AppError';
 import { ILand } from '../../model/Land';
 import { SPIN_LEFT, SPIN_RIGHT, Orientation } from '../../constants';
 
+interface IRoverPathGenarator {
+  pathCommands: string;
+  current_orientation: Orientation;
+  current_possition_y: number;
+  current_possition_x: number;
+  lastsRoversPositions: RoverPathExecuted[];
+  horizontalRange: number;
+  verticalRange: number;
+}
+
 interface RoverPathExecuted {
-  roverId: Types.ObjectId;
+  roverId?: Types.ObjectId;
   current_orientation: Orientation;
   current_possition_x: number;
   current_possition_y: number;
@@ -19,6 +29,94 @@ interface MissionExecuted {
 
 interface Request {
   id: string;
+}
+
+export function verifyCollisions(
+  current_possition_x: number,
+  current_possition_y: number,
+  lastsRoversPositions: RoverPathExecuted[],
+) {
+  lastsRoversPositions.forEach((lastRoverPosition: RoverPathExecuted) => {
+    const coordinatesRover = `${current_possition_x},${current_possition_y}`;
+    const coordinatesLastRover = `${lastRoverPosition.current_possition_x},${lastRoverPosition.current_possition_y}`;
+    if (coordinatesRover === coordinatesLastRover) {
+      throw new AppError('Rovers will collid!');
+    }
+  });
+}
+
+export function verifyLandExceeds(
+  horizontalRange: number,
+  verticalRange: number,
+  current_possition_x: number,
+  current_possition_y: number,
+) {
+  const exceedsx =
+    current_possition_x > horizontalRange || current_possition_x < 0;
+  const exceedsy =
+    current_possition_y > verticalRange || current_possition_y < 0;
+
+  if (exceedsx || exceedsy) {
+    throw new AppError('The rover exceeds the limits of plateau.');
+  }
+}
+
+export function roverPathGenarator({
+  pathCommands,
+  current_orientation,
+  current_possition_y,
+  current_possition_x,
+  lastsRoversPositions,
+  horizontalRange,
+  verticalRange,
+}: IRoverPathGenarator) {
+  const commands = pathCommands.split('');
+
+  commands.forEach((command: string) => {
+    switch (command) {
+      case 'M':
+        switch (current_orientation) {
+          case 'N' as Orientation:
+            current_possition_y += 1;
+            break;
+          case 'S' as Orientation:
+            current_possition_y -= 1;
+            break;
+          case 'E' as Orientation:
+            current_possition_x += 1;
+            break;
+          case 'W' as Orientation:
+            current_possition_x -= 1;
+            break;
+        }
+        break;
+      case 'L':
+        current_orientation = SPIN_LEFT[
+          `${current_orientation}` as keyof typeof SPIN_LEFT
+        ] as Orientation;
+        break;
+      case 'R':
+        current_orientation = SPIN_RIGHT[
+          `${current_orientation}` as keyof typeof SPIN_RIGHT
+        ] as Orientation;
+        break;
+      default:
+        break;
+    }
+    verifyLandExceeds(
+      horizontalRange,
+      verticalRange,
+      current_possition_x,
+      current_possition_y,
+    );
+    verifyCollisions(
+      current_possition_x,
+      current_possition_y,
+      lastsRoversPositions,
+    );
+  });
+
+  return { current_orientation, current_possition_y, current_possition_x };
 }
 
 class ExecuteMissionService {
@@ -38,90 +136,29 @@ class ExecuteMissionService {
     return this.missionExecuted;
   }
 
-  private verifyCollisions(
-    current_possition_x: number,
-    current_possition_y: number,
-    lastsRoversPositions: RoverPathExecuted[],
-  ) {
-    lastsRoversPositions.forEach((lastRoverPosition: RoverPathExecuted) => {
-      const coordinatesRover = `${current_possition_x},${current_possition_y}`;
-      const coordinatesLastRover = `${lastRoverPosition.current_possition_x},${lastRoverPosition.current_possition_y}`;
-      if (coordinatesRover === coordinatesLastRover) {
-        throw new AppError('Rovers will collid!');
-      }
-    });
-  }
-
-  private verifyLandExceeds(
-    land: ILand,
-    current_possition_x: number,
-    current_possition_y: number,
-  ) {
-    const exceedsx =
-      current_possition_x > land.horizontalRange || current_possition_x < 0;
-    const exceedsy =
-      current_possition_y > land.verticalRange || current_possition_y < 0;
-
-    if (exceedsx || exceedsy) {
-      throw new AppError('The rover exceeds the limits of plateau.');
-    }
-  }
-
-  private roverPathGenarator(
-    land: ILand,
-    rover: IRoversMission,
+  private sendRoverPathGenarator(
+    roverId: Types.ObjectId,
+    horizontalRange: number,
+    verticalRange: number,
+    initial_orientation: Orientation,
+    initial_possition_x: number,
+    initial_possition_y: number,
+    pathCommands: string,
     lastsRoversPositions: RoverPathExecuted[],
   ): RoverPathExecuted {
-    let current_orientation: Orientation = rover.intialPosition
-      .orientation as Orientation;
-    let current_possition_x: number = rover.intialPosition.x;
-    let current_possition_y: number = rover.intialPosition.y;
-
-    const commands = rover.pathCommands.split('');
-
-    commands.forEach((command: string) => {
-      switch (command) {
-        case 'M':
-          switch (current_orientation) {
-            case 'N' as Orientation:
-              current_possition_y += 1;
-              break;
-            case 'S' as Orientation:
-              current_possition_y -= 1;
-              break;
-            case 'E' as Orientation:
-              current_possition_x += 1;
-              break;
-            case 'W' as Orientation:
-              current_possition_x -= 1;
-              break;
-          }
-          break;
-        case 'L':
-          current_orientation = SPIN_LEFT[
-            `${current_orientation}` as keyof typeof SPIN_LEFT
-          ] as Orientation;
-          break;
-        case 'R':
-          current_orientation = SPIN_RIGHT[
-            `${current_orientation}` as keyof typeof SPIN_RIGHT
-          ] as Orientation;
-          break;
-        default:
-          break;
-      }
-      this.verifyLandExceeds(land, current_possition_x, current_possition_y);
-      if (lastsRoversPositions) {
-        this.verifyCollisions(
-          current_possition_x,
-          current_possition_y,
-          lastsRoversPositions,
-        );
-      }
-    });
+    const { current_orientation, current_possition_y, current_possition_x } =
+      roverPathGenarator({
+        pathCommands,
+        current_orientation: initial_orientation,
+        current_possition_x: initial_possition_x,
+        current_possition_y: initial_possition_y,
+        lastsRoversPositions,
+        horizontalRange,
+        verticalRange,
+      });
 
     return {
-      roverId: rover.roverId,
+      roverId,
       current_orientation,
       current_possition_x,
       current_possition_y,
@@ -155,9 +192,14 @@ class ExecuteMissionService {
 
     mission?.roversMission.forEach(rover => {
       missionPathsGenerated.push(
-        this.roverPathGenarator(
-          land,
-          rover,
+        this.sendRoverPathGenarator(
+          rover.roverId,
+          land.horizontalRange,
+          land.verticalRange,
+          rover.intialPosition.orientation as Orientation,
+          rover.intialPosition.x,
+          rover.intialPosition.y,
+          rover.pathCommands,
           missionPathsGenerated,
         ) as RoverPathExecuted,
       );

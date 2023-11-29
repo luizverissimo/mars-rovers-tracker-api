@@ -1,12 +1,14 @@
 export function createMissionSuccessfully(
   landId: string | undefined,
   userId: string | undefined,
+  rover1Id: string | undefined,
+  rover2Id: string | undefined,
 ) {
   return {
     name: 'mission 1',
     roversMission: [
       {
-        roverId: '655e4c3f6ef0e532b8281f04',
+        roverId: rover1Id,
         pathCommands: 'LMLMLMLMM',
         intialPosition: {
           x: 1,
@@ -15,7 +17,7 @@ export function createMissionSuccessfully(
         },
       },
       {
-        roverId: '655e4c9730aa66b57d0b2fe0',
+        roverId: rover2Id,
         pathCommands: 'MRRMMRMRRM',
         intialPosition: {
           x: 3,
@@ -32,12 +34,13 @@ export function createMissionSuccessfully(
 export function createMissionExceedsLand(
   landId: string | undefined,
   userId: string | undefined,
+  rover1Id: string | undefined,
 ) {
   return {
     name: 'mission 2',
     roversMission: [
       {
-        roverId: '655e4c3f6ef0e532b8281f04',
+        roverId: rover1Id,
         pathCommands: 'MMMLLMR',
         intialPosition: {
           x: 9,
@@ -54,12 +57,14 @@ export function createMissionExceedsLand(
 export function createMissionColission(
   landId: string | undefined,
   userId: string | undefined,
+  rover1Id: string | undefined,
+  rover2Id: string | undefined,
 ) {
   return {
     name: 'mission 3',
     roversMission: [
       {
-        roverId: '655e4c3f6ef0e532b8281f04',
+        roverId: rover1Id,
         pathCommands: 'MMMLLMR',
         intialPosition: {
           x: 1,
@@ -68,7 +73,7 @@ export function createMissionColission(
         },
       },
       {
-        roverId: '655e4c3f6ef0e532b8281f04',
+        roverId: rover2Id,
         pathCommands: 'MMMRMLMM',
         intialPosition: {
           x: 0,
